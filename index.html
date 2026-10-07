@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Verificação rápida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#06100B;
+    --ink-2:#0D1E15;
+    --line:#1C3A2A;
+    --paper:#EAF4EE;
+    --muted:#8FA898;
+    --green:#14593A;
+    --green-hover:#1C7A4F;
+    --mint:#8FDDB2;
+    --radius:14px;
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    background-image:radial-gradient(90% 60% at 50% -10%, rgba(20,89,58,.45) 0%, rgba(20,89,58,0) 60%);
+    background-attachment:fixed;
+    color:var(--paper);
+    font-family:"Archivo", "Helvetica Neue", Arial, sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .stage{
+    width:100%;
+    max-width:520px;
+    margin:0 auto;
+    padding:22px 18px 28px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding-bottom:18px;
+  }
+  .bolt{
+    width:28px;height:28px;border-radius:9px;
+    background:var(--green);
+    display:grid;place-items:center;
+    font-size:15px;
+    flex:none;
+  }
+  .brand b{font-weight:600;font-size:15px;}
+  .brand span{margin-left:auto;font-size:12.5px;color:var(--muted);}
+
+  .track{margin:14px 0 30px;}
+  .track-label{font-size:12.5px;color:var(--muted);margin-bottom:10px;}
+  .track-bar{display:flex;gap:6px;}
+  .track-bar span{
+    flex:1;height:5px;border-radius:99px;background:var(--line);
+    transition:background .35s ease;
+  }
+  .track-bar span.on{background:var(--green-hover);}
+
+  .screen{display:none;}
+  .screen.is-active{display:block;animation:enter .35s cubic-bezier(.2,.7,.3,1) both;}
+  @keyframes enter{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  h1{
+    font-weight:800;
+    font-size:34px;
+    line-height:1.08;
+    letter-spacing:-1.1px;
+    margin:0 0 12px;
+  }
+  .sub{color:var(--muted);font-size:15px;margin:0 0 28px;max-width:34ch;}
+
+  .answers{display:grid;gap:11px;}
+  .answer{
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    text-align:left;
+    font-family:inherit;
+    font-size:18px;
+    font-weight:600;
+    color:var(--paper);
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-left:4px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+    cursor:pointer;
+    transition:border-color .16s ease, background .16s ease, transform .1s ease;
+  }
+  .answer:hover{border-color:var(--green-hover);background:#11281C;}
+  .answer:active{transform:scale(.99);}
+  .answer:focus-visible{outline:2px solid var(--mint);outline-offset:3px;}
+  .answer.is-picked{
+    background:var(--green);
+    border-color:var(--green-hover);
+    color:#FFFFFF;
+  }
+
+  .card{
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-left:4px solid var(--green);
+    border-radius:var(--radius);
+    padding:20px;
+    margin:0 0 24px;
+  }
+  .card p{margin:0;font-size:15px;color:var(--muted);}
+  .card p + p{margin-top:10px;}
+
+  footer{
+    margin-top:auto;
+    padding-top:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  footer .age{
+    border:1px solid var(--mint);
+    color:var(--mint);
+    border-radius:99px;
+    padding:3px 10px;
+    font-weight:600;
+    font-size:12px;
+  }
+
+  @media (min-width:520px){
+    h1{font-size:40px;}
+    .stage{padding:32px 24px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="brand">
+    <div class="bolt" aria-hidden="true">⚡</div>
+    <b>Verificação de acesso</b>
+    <span>1 pergunta</span>
+  </div>
+
+  <div class="track" id="track">
+    <div class="track-label">Confirme sua idade</div>
+    <div class="track-bar">
+      <span class="on"></span>
+    </div>
+  </div>
+
+  <main id="app">
+
+    <section class="screen is-active" id="q1">
+      <h1>Você tem mais de 18 anos?</h1>
+      <p class="sub">Precisamos confirmar sua idade antes de liberar o conteúdo.</p>
+      <div class="answers">
+        <button class="answer" type="button" id="btn-maior18" data-v="sim">Sim, sou maior de 18</button>
+        <button class="answer" type="button" id="btn-menor18" data-v="nao">Não</button>
+      </div>
+    </section>
+
+    <section class="screen" id="blocked">
+      <h1>Acesso não liberado</h1>
+      <div class="card">
+        <p>Este conteúdo é destinado exclusivamente a pessoas com 18 anos ou mais.</p>
+        <p>Você pode fechar esta página com segurança.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span class="age">+18</span>
+  </footer>
+
+</div>
+
+<script>
+/* =========================================================
+   CONFIGURAÇÃO — altere só este bloco
+   ========================================================= */
+var CONFIG = {
+  // Link aberto quando a pessoa confirma que é maior de 18
+  linkOferta: "https://fliperamaofertas.store/X5q2xL4Q",
+
+  // Repassa as query strings da URL atual para o link de saída
+  // (utm_source, utm_campaign, sub_id, click_id, fbclid...)
+  repassarParametros: true
+};
+/* ========================================================= */
+
+var redirecionando = false;
+
+function mostrar(id) {
+  document.querySelectorAll(".screen").forEach(function (s) { s.classList.remove("is-active"); });
+  document.getElementById(id).classList.add("is-active");
+  window.scrollTo(0, 0);
+}
+
+function montarLink() {
+  var base = CONFIG.linkOferta;
+  if (!CONFIG.repassarParametros) return base;
+  try {
+    var atual = new URLSearchParams(window.location.search);
+    if (!atual.toString()) return base;
+    var destino = new URL(base, window.location.href);
+    atual.forEach(function (valor, chave) { destino.searchParams.set(chave, valor); });
+    return destino.toString();
+  } catch (e) {
+    return base;
+  }
+}
+
+function marcar(botao) {
+  document.querySelectorAll(".answer").forEach(function (b) { b.classList.remove("is-picked"); });
+  botao.classList.add("is-picked");
+}
+
+// Confirmou a idade: vai direto para o link
+document.getElementById("btn-maior18").addEventListener("click", function () {
+  if (redirecionando) return;
+  redirecionando = true;
+  marcar(this);
+  setTimeout(function () {
+    window.location.href = montarLink();
+  }, 260);
+});
+
+// Menor de idade: bloqueia
+document.getElementById("btn-menor18").addEventListener("click", function () {
+  marcar(this);
+  setTimeout(function () {
+    document.getElementById("track").style.visibility = "hidden";
+    mostrar("blocked");
+  }, 260);
+});
+</script>
+</body>
+</html>
